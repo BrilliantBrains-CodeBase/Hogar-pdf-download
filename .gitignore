@@ -1,0 +1,11 @@
+node_modules
+dist
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+
+# Original source PDFs (copies live in public/catalogues/)
+/du-catalogue.pdf
+/hogar-catalogue.pdf

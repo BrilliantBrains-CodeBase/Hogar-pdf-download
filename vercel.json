@@ -1,0 +1,3 @@
+{
+  "rewrites": [{ "source": "/((?!catalogues/|brand/|assets/).*)", "destination": "/index.html" }]
+}
