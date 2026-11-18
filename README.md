@@ -40,7 +40,7 @@ QR scan → Form (/) → choose Hogar or DU → Submit
 │   ├── services/googleAppsScript.js  # POST to Apps Script; resolves only on confirmed save
 │   ├── utils/                   # validation, download helpers, submission session
 │   ├── App.jsx · main.jsx · index.css
-├── .env.example
+├── .env.example             # optional catalogue URL overrides
 ├── vercel.json                  # Vercel SPA fallback
 └── README.md
 ```
@@ -53,14 +53,12 @@ Requires Node.js 18+.
 
 ```bash
 npm install
-cp .env.example .env      # Windows: copy .env.example .env
-# put your Apps Script /exec URL in .env (see section 3)
 npm run dev               # http://localhost:5173
 ```
 
 `npm run build` writes the production site to `dist/`. Use `npm run preview` to test that build locally.
 
-> If `VITE_GOOGLE_SCRIPT_URL` is missing, the form shows a "not connected" error. It never shows a fake success.
+> The Apps Script URL is set directly in `src/services/googleAppsScript.js` (`SCRIPT_URL`). No `.env` is needed.
 
 ---
 
@@ -96,13 +94,10 @@ Then:
    - **Who has access:** **Anyone**
 4. Click **Deploy**, then copy the **Web app URL**. It looks like `https://script.google.com/macros/s/AKfy.../exec`.
 5. Open that URL in a browser. You should see `{"success":true,"status":"ok",...}`.
-6. Put the URL in `.env` (or your host's environment variables):
-   ```
-   VITE_GOOGLE_SCRIPT_URL=https://script.google.com/macros/s/AKfy.../exec
-   ```
+6. Put the URL in `SCRIPT_URL` at the top of [src/services/googleAppsScript.js](src/services/googleAppsScript.js).
 7. Rebuild and redeploy the frontend. Vite bakes env values in at build time.
 
-> **Updating the script later:** go to **Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy**. This keeps the same URL. If you use **New deployment** instead, you get a new URL and must update `.env`.
+> **Updating the script later:** go to **Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy**. This keeps the same URL. If you use **New deployment** instead, you get a new URL and must update `SCRIPT_URL` in `src/services/googleAppsScript.js`.
 
 ### What the backend does
 - Validates every field again on the server: allowed category and company, name, a 10-digit Indian mobile starting with 6–9, email format, and length limits.
@@ -167,14 +162,14 @@ Your web host must send unknown paths to `index.html` so that `/thank-you` works
 The output is a static site, so any HTTPS host works.
 
 **Vercel (recommended)**
-1. Push the project to GitHub. Do **not** commit `.env`.
+1. Push the project to GitHub.
 2. In Vercel: **Add New → Project**, import the repo. The framework is detected as **Vite**.
-3. Under **Environment Variables**, add `VITE_GOOGLE_SCRIPT_URL` (and the optional catalogue URLs).
+3. No environment variables are required (optionally add the catalogue URL overrides).
 4. Click Deploy. Optionally add a custom domain, for example `catalogue.hogarcontrols.com`.
 
 **Netlify:** build command `npm run build`, publish directory `dist`, plus the same env variables.
 
-**cPanel / any static host:** run `npm run build` locally with `.env` filled in, then upload the **contents** of `dist/`, including the `.htaccess` file, to the web root.
+**cPanel / any static host:** run `npm run build` locally, then upload the **contents** of `dist/`, including the `.htaccess` file, to the web root.
 
 ### Post-deploy checklist
 - [ ] The site opens over **HTTPS**.

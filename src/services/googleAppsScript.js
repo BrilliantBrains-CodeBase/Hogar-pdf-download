@@ -8,7 +8,9 @@
  * Resolves ONLY when the script confirms `{ success: true, leadId }`.
  * Everything else throws, so the UI can never show a false success.
  */
-const SCRIPT_URL = (import.meta.env.VITE_GOOGLE_SCRIPT_URL || '').trim();
+// Google Apps Script Web App URL (Deploy > Manage deployments > Web app URL).
+const SCRIPT_URL =
+  'https://script.google.com/macros/s/AKfycbxjM24R4AS4OObX3go9NMTv9fbxKYBxyAHB8TyHPx6Dqi8WMJksSHjY-ma_nkHFxYHjFQ/exec';
 const TIMEOUT_MS = 25000;
 
 export class SubmissionError extends Error {
@@ -26,7 +28,7 @@ export function isScriptConfigured() {
 export async function submitLead(payload) {
   if (!isScriptConfigured()) {
     throw new SubmissionError(
-      'The form is not connected yet (VITE_GOOGLE_SCRIPT_URL is missing or invalid). Please contact the event team.',
+      'The form is not connected yet (Apps Script URL is missing or invalid). Please contact the event team.',
       { retryable: false },
     );
   }
